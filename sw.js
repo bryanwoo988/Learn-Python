@@ -92,7 +92,8 @@ self.addEventListener('fetch', event => {
       const hit = await cache.match(url.pathname);
       if (hit) return hit;
       const res = await fetch(req);
-      if (res.ok) await cache.put(url.pathname, res.clone());
+      // Stored in the background, so the page's download progress keeps moving.
+      if (res.ok) event.waitUntil(cache.put(url.pathname, res.clone()));
       return res;
     })());
     return;
