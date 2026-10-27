@@ -4,7 +4,7 @@
 :root {
   --bg: #f6f8fb; --surface: #ffffff; --surface-2: #eef3f8; --text: #1d2733; --muted: #5f6d7d; --border: #dbe3ec;
   --accent: #2f7fd0; --accent-ink: #ffffff;
-  --brand: #ffe600; --brand-ink: #2b2b2b; --brand-edge: #e5cf00;
+  --brand: #ffd43b; --brand-ink: #2b2b2b; --brand-edge: #e5bd1f;
   --ok: #1f9d6b; --ok-bg: #e5f6ee; --bad: #d64545; --bad-bg: #fdecec; --warn: #a06c00; --warn-bg: #fff8d6;
   --code-bg: #f3f6fa;
   --tk-k: #7c3aed; --tk-f: #0b72c3; --tk-s: #b45309; --tk-n: #0f8a5f; --tk-c: #8a94a3;
@@ -346,3 +346,32 @@ details.expected summary { cursor: pointer; color: var(--accent); font-weight: 6
 .keyval { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0 0 6px; }
 .keyval dt { color: var(--muted); }
 .keyval dd { margin: 0; font-weight: 600; }
+
+/* ---------------------------------------------------------------- Python output */
+pre.stdout { margin: 8px 0; padding: 10px 12px; background: var(--code-bg); border: 1px solid var(--border); border-radius: 10px;
+  font: 13px/1.5 var(--mono); white-space: pre-wrap; word-break: break-word; max-height: 420px; overflow: auto; }
+img.plot { display: block; max-width: 100%; height: auto; margin: 8px 0; border-radius: 10px; background: #fff; }
+.errbox { margin: 8px 0; border: 1px solid var(--bad); background: var(--bad-bg); border-radius: 10px; overflow: hidden; }
+.errbox pre { margin: 0; padding: 10px 12px; font: 13px/1.5 var(--mono); white-space: pre-wrap; word-break: break-word; color: var(--bad); }
+.why-err { display: flex; gap: 8px; align-items: flex-start; padding: 8px 12px; border-top: 1px solid var(--bad); background: var(--surface); font-size: 14px; }
+.why-err .ic { flex: none; width: 18px; height: 18px; color: var(--warn); margin-top: 1px; }
+.loading.inline { padding: 12px 0; min-height: 0; justify-content: flex-start; flex-direction: row; gap: 10px; }
+.loading.inline .spinner { width: 18px; height: 18px; border-width: 2px; margin: 0; }
+.btn.stop { background: var(--bad); border-color: var(--bad); color: #fff; }
+.stdin { display: block; margin: 8px 0; }
+.stdin textarea { display: block; width: 100%; margin-top: 4px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 10px;
+  background: var(--surface); color: var(--text); font: 13px/1.5 var(--mono); resize: vertical; }
+.lesson-card .body p { margin: 0 0 8px; }
+.given { margin: 12px 0; padding: 10px 12px; border-left: 3px solid var(--accent); background: var(--surface-2); border-radius: 0 10px 10px 0; }
+.given h3 { margin: 0 0 6px; font-size: 14px; }
+.given p, .given ul { margin: 4px 0; }
+pre.file-view { max-height: 240px; overflow: auto; font-size: 12px; }
+.diff pre.stdout { max-height: 260px; }
+.part-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 28px; }
+.badge.pack { display: inline-flex; align-items: center; gap: 4px; background: var(--warn-bg); color: var(--warn); font-weight: 600; }
+.badge.pack .ic { width: 14px; height: 14px; }
+.gate { border: 1px dashed var(--accent); }
+.gate h3 { margin-top: 0; }
+.pack-bar { margin: 10px 0 4px; }
+.pack-bar span { transition: width .2s; }
+.editor textarea { tab-size: 4; }

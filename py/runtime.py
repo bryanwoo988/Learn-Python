@@ -199,6 +199,8 @@ def same(a, b, ordered=True):
         if not (hasattr(a, 'shape') and hasattr(b, 'shape')) or a.shape != b.shape:
             return False
         return same(a.tolist(), b.tolist())
+    if isinstance(a, dict) and isinstance(b, dict):  # Counter, defaultdict … count as dicts
+        return set(a) == set(b) and all(same(a[k], b[k]) for k in a)
     if type(a) is not type(b) and not (isinstance(a, str) and isinstance(b, str)):
         return False
     if isinstance(a, (list, tuple)):
@@ -213,8 +215,6 @@ def same(a, b, ordered=True):
                 return False
             rest.pop(hit)
         return True
-    if isinstance(a, dict):
-        return set(a) == set(b) and all(same(a[k], b[k]) for k in a)
     try:
         return bool(a == b)
     except Exception:
