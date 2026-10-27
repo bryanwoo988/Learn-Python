@@ -300,6 +300,11 @@ def grade(code, solution, check, setup='', cases=None, files=None, stdin=None):
         if sol_err:
             raise RuntimeError(f'reference solution failed: {sol_err["tb"]}')
         sol_fig = figure_summary() if kind == 'figure' else None
+        # Expected values are taken now: the learner's run resets the shared files.
+        if kind == 'function':
+            sol_ret = sol_ns[check['name']](*copy.deepcopy(calls[i]))
+        elif kind == 'values':
+            sol_vals = [eval(expr, sol_ns) for expr in check['exprs']]
         ns, out, err = _execute(code, case_setup, files, stdin)
         res = {'ok': False, 'case': i, 'hidden': i > 0, 'stdout': out, 'error': err, 'reason': '', 'got': '', 'exp': '', 'assert': None}
         if i == 0:
@@ -318,7 +323,7 @@ def grade(code, solution, check, setup='', cases=None, files=None, stdin=None):
                 res.update(reason='missing', got=name)
                 return res
             args = calls[i]
-            exp = sol_ns[name](*copy.deepcopy(args))
+            exp = sol_ret
             got_ns, got_out, got_err = ns, None, None
             real_out = sys.stdout
             sys.stdout = CappedStdout()
@@ -337,7 +342,7 @@ def grade(code, solution, check, setup='', cases=None, files=None, stdin=None):
                 res.update(reason='return', got=f'{_call_text(name, args)} → {_shown(got)}', exp=f'{_call_text(name, args)} → {_shown(exp)}')
                 return res
         elif kind == 'values':
-            for expr in check['exprs']:
+            for expr, exp in zip(check['exprs'], sol_vals):
                 try:
                     got = eval(expr, ns)
                 except NameError:
@@ -346,7 +351,6 @@ def grade(code, solution, check, setup='', cases=None, files=None, stdin=None):
                 except BaseException as e:  # noqa: BLE001
                     res.update(reason='error', error=_error_info(e, code))
                     return res
-                exp = eval(expr, sol_ns)
                 if not same(got, exp, ordered=ordered):
                     res.update(reason='value', got=f'{expr} = {_shown(got)}', exp=f'{expr} = {_shown(exp)}')
                     return res

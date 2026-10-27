@@ -68,6 +68,10 @@ await test('grade values: groupby keys are compared', async () => {
 });
 await test('grade values: Counter accepted where a dict is expected', async () =>
   eq((await py.grade({ code: 'from collections import Counter\nc = Counter("aab")', solution: 'c = {"a": 2, "b": 1}', check: { type: 'values', exprs: ['c'] } })).ok, true));
+await test('grade values: expected values come from the solution run, not the learner files', async () =>
+  eq((await py.grade({ code: 'open("o.txt", "w").write("")', solution: 'open("o.txt", "w").write("x")', check: { type: 'values', exprs: ['open("o.txt").read()'] } })).ok, false));
+await test('grade function: expected results come from the solution run', async () =>
+  eq((await py.grade({ code: 'def f():\n    open("o.txt", "w").write("")\n    return open("o.txt").read()', solution: 'def f():\n    return "x"', check: { type: 'function', name: 'f', calls: [[]] } })).ok, false));
 await test('grade asserts: failing assert reports its index', async () => {
   const r = await py.grade({ code: 'x = 1', solution: 'x = 1', check: { type: 'values', exprs: ['x'], asserts: [{ expr: 'x > 0' }, { expr: 'x > 5' }] } });
   eq([r.ok, r.reason, r.assert], [false, 'assert', 1]);
