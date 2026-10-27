@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Python Syntax</title>
+  <meta name="description" content="Python Syntax · Python语言 — learn Python from zero to data analysis and machine learning: 18 chapters, 83 practice problems. 互动式 Python 学习应用。">
+  <meta name="theme-color" content="#f6f8fb">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Python Syntax">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Python Syntax · Python语言">
+  <meta property="og:description" content="Learn Python interactively — 83 problems, bilingual EN/中文, offline.">
+  <meta property="og:url" content="https://bryanwoo988.github.io/Learn-Python/">
+  <meta property="og:image" content="https://bryanwoo988.github.io/Learn-Python/icons/icon-512.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <script>
+  /* Before anything paints: apply the saved mode and theme so a dark phone never
+     flashes white. Mirrors applyTheme() in js/app.js. */
+  (function () {
+    var p = {};
+    try { p = JSON.parse(localStorage.getItem('pysyntax.prefs') || '{}') || {}; } catch (e) {}
+    var mode = ['light', 'dark'].indexOf(p.mode) >= 0 ? p.mode : 'system';
+    var dark = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches;
+    var side = mode === 'system' ? (dark ? 'dark' : 'light') : mode;
+    var ok = { light: ['classic', 'paper', 'mint', 'lavender'], dark: ['midnight', 'oled', 'slate', 'grape'] };
+    var r = document.documentElement;
+    r.dataset.theme = side;
+    r.dataset.palette = ok[side].indexOf(p[side]) >= 0 ? p[side] : ok[side][0];
+  })();
+  </script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="#/"><img src="icons/icon-32.png" alt="" width="28" height="28"><span id="brandName">Python Syntax</span></a>
+    <nav class="tabs-top" aria-label="Main">
+      <a href="#/" data-nav="navHome" data-icon="home"><span>Home</span></a>
+      <a href="#/learn" data-nav="navLearn" data-icon="book"><span>Learn</span></a>
+      <a href="#/practice" data-nav="navPractice" data-icon="code"><span>Practice</span></a>
+      <a href="#/playground" data-nav="navPlay" data-icon="terminal"><span>Playground</span></a>
+    </nav>
+    <a class="icon-btn" id="settingsBtn" href="#/settings" aria-label="Settings" data-icon="settings"></a>
+  </header>
+
+  <main id="view" class="wrap"></main>
+
+  <nav class="bottom-nav" aria-label="Main">
+    <a href="#/" data-nav="navHome"><b data-icon="home"></b><span>Home</span></a>
+    <a href="#/learn" data-nav="navLearn"><b data-icon="book"></b><span>Learn</span></a>
+    <a href="#/practice" data-nav="navPractice"><b data-icon="code"></b><span>Practice</span></a>
+    <a href="#/playground" data-nav="navPlay"><b data-icon="terminal"></b><span>Playground</span></a>
+  </nav>
+
+  <script src="js/icons.js"></script>
+  <script src="js/qrcode.js"></script>
+  <script src="js/whatsnew.js"></script>
+  <script src="js/releases.js"></script>
+  <script src="js/errors.js"></script>
+  <script src="js/content/core.js"></script>
+  <script src="js/content/beginner.js"></script>
+  <script src="js/content/intermediate.js"></script>
+  <script src="js/content/data.js"></script>
+  <script src="js/content/ml.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
