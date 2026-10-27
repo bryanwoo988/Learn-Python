@@ -68,28 +68,37 @@
 
   async function packState() {
     const pack = await packFiles();
-    if (window.caches && navigator.serviceWorker && navigator.serviceWorker.controller) {
-      const cache = await caches.open(PKGS_CACHE);
-      for (const f of pack.files) if (!(await cache.match(packUrl(f.name).pathname))) return 'none';
-      return 'ready';
+    if (window.caches) {
+      try {
+        const cache = await caches.open(PKGS_CACHE);
+        for (const f of pack.files) if (!(await cache.match(packUrl(f.name).pathname))) return 'none';
+        return 'ready';
+      } catch (e) { /* Cache Storage blocked (private mode): fall through */ }
     }
-    // No service worker (first visit before it took over): fall back to what was downloaded this session.
     try { return localStorage.getItem(FLAG) === pack.version ? 'ready' : 'none'; } catch (e) { return 'none'; }
   }
 
+  // Each wheel is stored in the data-pack cache by the page itself, so it is kept for offline
+  // use even when the service worker has not taken over yet (first visit).
   async function downloadPack(onProgress) {
     const pack = await packFiles();
+    const cache = window.caches ? await caches.open(PKGS_CACHE).catch(() => null) : null;
     let done = 0;
     for (const f of pack.files) {
-      const res = await fetch(packUrl(f.name));
+      const url = packUrl(f.name);
+      if (cache && (await cache.match(url.pathname))) { done += f.size; continue; }
+      const res = await fetch(url);
       if (!res.ok) throw new Error('HTTP ' + res.status + ' ' + f.name);
       const reader = res.body.getReader();
+      const chunks = [];
       for (;;) {
         const { done: end, value } = await reader.read();
         if (end) break;
+        chunks.push(value);
         done += value.length;
         if (onProgress) onProgress(Math.min(done, pack.total), pack.total);
       }
+      if (cache) await cache.put(url.pathname, new Response(new Blob(chunks), { headers: { 'Content-Type': res.headers.get('Content-Type') || 'application/octet-stream' } }));
     }
     try { localStorage.setItem(FLAG, pack.version); } catch (e) { /* storage unavailable */ }
     await call('load');

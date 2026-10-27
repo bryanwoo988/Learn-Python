@@ -169,6 +169,24 @@ try {
     await ctx.setOffline(false);
   });
 
+  await step('data pack downloaded before the service worker takes over is still cached', async () => {
+    const fresh = await browser.newContext({ serviceWorkers: 'block' });
+    const p2 = await fresh.newPage();
+    await p2.goto(URL0 + '#/settings');
+    await p2.locator('#packGo').click({ timeout: 20e3 });
+    await p2.locator('.modal .pack-btn').click();
+    await p2.locator('.modal').waitFor({ state: 'detached', timeout: 180e3 });
+    const missing = await p2.evaluate(async () => {
+      const pack = await (await fetch('vendor/pyodide/pack.json')).json();
+      const cache = await caches.open('py-syntax-pkgs-' + pack.version);
+      const out = [];
+      for (const f of pack.files) if (!(await cache.match(new URL('vendor/pyodide/' + f.name, location.href).pathname))) out.push(f.name);
+      return out;
+    });
+    await fresh.close();
+    if (missing.length) throw new Error(missing.length + ' wheels not cached, e.g. ' + missing[0]);
+  });
+
   await step('phone width: no horizontal scroll on main pages', async () => {
     const phone = await browser.newPage({ viewport: { width: 390, height: 844 } });
     for (const h of ['#/', '#/learn', '#/learn/strings', '#/practice', '#/problem/305', '#/playground', '#/settings', '#/next']) {
