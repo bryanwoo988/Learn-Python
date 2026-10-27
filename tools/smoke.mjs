@@ -138,7 +138,25 @@ try {
     if (!(await page.locator('#out img.plot').count())) throw new Error('no chart');
   });
 
+  await step('data pack is cached under its own name (kept across releases)', async () => {
+    const keys = await page.evaluate(() => caches.keys());
+    if (!keys.includes('py-syntax-pkgs-314.0.7')) throw new Error(keys.join(', '));
+    if (keys.some(k => !k.startsWith('py-syntax-'))) throw new Error('foreign cache: ' + keys.join(', '));
+  });
+
+  for (const [id, code] of [[1305, 'result = df.groupby("class")["math"].mean().round(1)'],
+    [1701, 'from sklearn.tree import DecisionTreeClassifier\nmodel = DecisionTreeClassifier(random_state=0).fit(X_train, y_train)\nacc = model.score(X_test, y_test)']]) {
+    await step(`data-pack problem ${id} is accepted`, async () => {
+      await page.goto(URL0 + '#/problem/' + id);
+      await page.locator('#ed textarea').fill(code);
+      await page.click('#subBtn');
+      await page.locator('.verdict').waitFor({ timeout: 90e3 });
+      if (!(await page.locator('.verdict.ok').count())) throw new Error(await outText('.verdict') + ' ' + await outText('#out'));
+    });
+  }
+
   await step('offline: reload works and pandas still runs', async () => {
+    await page.goto(URL0 + '#/playground');
     await page.reload();
     await page.waitForFunction(() => navigator.serviceWorker.controller, null, { timeout: 30e3 });
     await ctx.setOffline(true);
